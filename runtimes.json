@@ -1,0 +1,160 @@
+{
+    "runtimes": [
+        {
+            "command": "sh -c 'gcc main.c -o main && ./main'",
+            "image": "gcc",
+            "label": "C",
+            "name": "c"
+        },
+        {
+            "command": "sh -c 'lein new main && lein run'",
+            "image": "clojure",
+            "label": "Clojure",
+            "name": "clojure"
+        },
+        {
+            "command": "sh -c 'g++ main.cpp -o main && ./main'",
+            "image": "gcc",
+            "label": "C++",
+            "name": "cpp"
+        },
+        {
+            "command": "elixir main.exs",
+            "image": "msaraiva/elixir",
+            "label": "Elixir",
+            "name": "elixir"
+        },
+        {
+            "command": "sh -c 'erlc main.erl && erl -noshell -s main start -s init stop'",
+            "image": "erlang",
+            "label": "Erlang",
+            "name": "erlang"
+        },
+        {
+            "command": "go run main.go",
+            "image": "golang",
+            "label": "Go",
+            "name": "go"
+        },
+        {
+            "command": "sh -c 'ghc -o main main.hs && ./main'",
+            "image": "haskell",
+            "label": "Haskell",
+            "name": "haskell"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:6",
+            "label": "Java 6",
+            "name": "java6"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:7",
+            "label": "Java 7",
+            "name": "java7"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:8",
+            "label": "Java 8",
+            "name": "java8"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:9",
+            "label": "Java 9",
+            "name": "java9"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:openjdk-6",
+            "label": "OpenJDK 6",
+            "name": "openjdk6"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:openjdk-7",
+            "label": "OpenJDK 7",
+            "name": "openjdk7"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:openjdk-8",
+            "label": "OpenJDK 8",
+            "name": "openjdk8"
+        },
+        {
+            "command": "sh -c 'javac main.java && java main'",
+            "image": "java:openjdk-9",
+            "label": "OpenJDK 9",
+            "name": "openjdk9"
+        },
+        {
+            "command": "lua main.lua",
+            "image": "abaez/lua",
+            "label": "Lua",
+            "name": "lua"
+        },
+        {
+            "command": "node main.js",
+            "image": "node",
+            "label": "Node",
+            "name": "node"
+        },
+        {
+            "command": "sh -c 'gcc main.m -o main && ./main'",
+            "image": "nacyot/objectivec-gcc:apt",
+            "label": "Objective-C",
+            "name": "objc"
+        },
+        {
+            "command": "perl main.pl",
+            "image": "perl",
+            "label": "Perl",
+            "name": "perl"
+        },
+        {
+            "command": "php main.php",
+            "image": "php",
+            "label": "PHP",
+            "name": "php"
+        },
+        {
+            "command": "python main.py",
+            "image": "python:2.7",
+            "label": "Python 2.7",
+            "name": "python27"
+        },
+        {
+            "command": "python main.py",
+            "image": "python:3.5",
+            "label": "Python 3.5",
+            "name": "python35"
+        },
+        {
+            "command": "Rscript main.R",
+            "image": "r-base",
+            "label": "R",
+            "name": "r"
+        },
+        {
+            "command": "ruby main.rb",
+            "image": "ruby",
+            "label": "Ruby",
+            "name": "ruby"
+        },
+        {
+            "command": "sh -c 'rustc main.rs -o main && ./main'",
+            "image": "schickling/rust",
+            "label": "Rust",
+            "name": "rust"
+        },
+        {
+            "command": "swift main.swift",
+            "image": "swiftdocker/swift",
+            "label": "Swift",
+            "name": "swift"
+        }
+    ]
+}
