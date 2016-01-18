@@ -54,7 +54,7 @@ func readFile(filename string) (envMap map[string]string, err error) {
 	}
 
 	for _, l := range lines {
-		if k, v, err := parseLine(l); err == nil {
+		if k, v, err := ParseLine(l); err == nil {
 			envMap[k] = v
 		}
 	}
@@ -62,7 +62,7 @@ func readFile(filename string) (envMap map[string]string, err error) {
 	return
 }
 
-func parseLine(line string) (k, v string, err error) {
+func ParseLine(line string) (k, v string, err error) {
 	if isIgnoredLine(line) {
 		err = ErrIgnoredLine
 		return

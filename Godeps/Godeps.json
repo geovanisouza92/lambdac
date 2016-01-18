@@ -13,7 +13,7 @@
 		},
 		{
 			"ImportPath": "github.com/geovanisouza92/env",
-			"Rev": "9812c6103f87fef43139af3d3aef3bc74a259ac1"
+			"Rev": "e40a2fa65e500bca7bf532539f0816b3abce2944"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
