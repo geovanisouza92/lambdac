@@ -39,8 +39,20 @@ func New(name, usage, version string, hc *http.Client) *cli.App {
 		},
 	}
 	app.Commands = []cli.Command{
+		config,
+		create,
 		daemon,
+		destroy,
+		env,
+		info,
+		invoke,
+		list,
+		logs,
+		ps,
+		pull,
+		push,
 		runtime,
+		stats,
 	}
 	app.Before = func(c *cli.Context) (err error) {
 		api = client.New("http://"+c.GlobalString("host"), hc)
@@ -48,6 +60,22 @@ func New(name, usage, version string, hc *http.Client) *cli.App {
 		return
 	}
 	return app
+}
+
+func checkFidOrFatal(c *cli.Context) string {
+	fid := c.String("function")
+	if fid == "" {
+		logger.Fatal("You must inform function ID")
+	}
+	return fid
+}
+
+func checkTimeoutOrFatal(c *cli.Context) time.Duration {
+	timeout, err := time.ParseDuration(c.String("timeout"))
+	if err != nil {
+		logger.Fatalf("invalid timeout: %s", err)
+	}
+	return timeout
 }
 
 func promptYesNo(msg string, v ...interface{}) (result bool) {
