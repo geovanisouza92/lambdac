@@ -83,6 +83,14 @@ func (s *Server) runtimeDestroy(w http.ResponseWriter, r *http.Request) {
 	// Get runtime param
 	runtime := context.Get(r, "runtime").(types.Runtime)
 
+	// Load related functions
+	functions, err := s.s.Functions().FindByRuntimeID(runtime.ID)
+	if err != nil {
+		exc := fmt.Errorf("[runtimeDestroy] Store error caused by: %s", err)
+		s.failure(w, r, http.StatusInternalServerError, exc)
+		return
+	}
+
 	// Load options
 	q := r.URL.Query()
 	force, err := strconv.ParseBool(q.Get("force"))
@@ -90,6 +98,18 @@ func (s *Server) runtimeDestroy(w http.ResponseWriter, r *http.Request) {
 		exc := fmt.Errorf("[runtimeDestroy] Invalid \"force\" value: %s", err)
 		s.failure(w, r, http.StatusBadRequest, exc)
 		return
+	}
+
+	// If not --force, say to user destroy related functions first
+	if !force {
+		exc := fmt.Errorf("[runtimeDestroy] This runtime is used by other functions. Destroy them first or use --force option")
+		s.failure(w, r, http.StatusBadRequest, exc)
+		return
+	}
+
+	// Destroy related functions
+	for _ = range functions {
+		//
 	}
 
 	// Destroy runtime

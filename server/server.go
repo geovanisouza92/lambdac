@@ -45,9 +45,29 @@ func New(storeName, connString string) (*Server, error) {
 	s := Server{r: mux.NewRouter(), s: st, f: fn}
 
 	// Configure API routes
-	v1 := s.r.PathPrefix("/api/v1").Subrouter() // HTTP /api/v1
-	r := v1.PathPrefix("/runtimes").Subrouter() // HTTP /api/v1/runtimes
-	rid := r.PathPrefix("/{id}").Subrouter()    // HTTP /api/v1/runtimes/{id}
+	v1 := s.r.PathPrefix("/api/v1").Subrouter()  // HTTP /api/v1
+	f := v1.PathPrefix("/functions").Subrouter() // HTTP /api/v1/functions
+	fid := f.PathPrefix("/{id}").Subrouter()     // HTTP /api/v1/functions/{id}
+	r := v1.PathPrefix("/runtimes").Subrouter()  // HTTP /api/v1/runtimes
+	rid := r.PathPrefix("/{id}").Subrouter()     // HTTP /api/v1/runtimes/{id}
+
+	f.Methods("GET").HandlerFunc(s.functionList)                          // HTTP 200 OK
+	f.Methods("POST").HandlerFunc(s.functionCreate)                       // HTTP 201 Created
+	fid.Methods("GET").HandlerFunc(s.queryFunction(s.functionInfo))       // HTTP 200 OK
+	fid.Methods("PUT").HandlerFunc(s.queryFunction(s.functionConfig))     // HTTP 202 Accepted
+	fid.Methods("DELETE").HandlerFunc(s.queryFunction(s.functionDestroy)) // HTTP 410 Gone
+
+	fid.Methods("GET").Path("/env").HandlerFunc(s.queryFunction(s.functionEnv))         // HTTP 200 OK
+	fid.Methods("PUT").Path("/env").HandlerFunc(s.queryFunction(s.functionEnvSet))      // HTTP 202 Accepted
+	fid.Methods("DELETE").Path("/env").HandlerFunc(s.queryFunction(s.functionEnvUnset)) // HTTP 410 Gone
+
+	fid.Methods("GET").Path("/code").HandlerFunc(s.queryFunction(s.functionPull)) // HTTP 200 OK
+	fid.Methods("PUT").Path("/code").HandlerFunc(s.queryFunction(s.functionPush)) // HTTP 202 Accepted
+
+	fid.Methods("GET").Path("/ps").HandlerFunc(s.queryFunction(s.functionPs))          // HTTP 200 OK
+	fid.Methods("GET").Path("/logs").HandlerFunc(s.queryFunction(s.functionLogs))      // HTTP 200 OK
+	fid.Methods("GET").Path("/stats").HandlerFunc(s.queryFunction(s.functionStats))    // HTTP 200 OK
+	fid.Methods("POST").Path("/invoke").HandlerFunc(s.queryFunction(s.functionInvoke)) // HTTP 202 Accepted
 
 	r.Methods("GET").HandlerFunc(s.runtimeList)                         // HTTP 200 OK
 	r.Methods("POST").HandlerFunc(s.runtimeCreate)                      // HTTP 201 Created
