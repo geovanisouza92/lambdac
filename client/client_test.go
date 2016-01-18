@@ -84,3 +84,27 @@ func TestRuntimeInfo(t *testing.T) {
 func TestRuntimeDestroy(t *testing.T) {
 	// TODO
 }
+
+func respondWith(t *testing.T, code int, path, body string) (*httptest.Server, API) {
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(code)
+		fmt.Fprintln(w, body)
+	}))
+
+	tr := &http.Transport{
+		Proxy: func(r *http.Request) (*url.URL, error) {
+			if r.URL.Path != path {
+				t.Errorf("Invalid path: expected %q got %q", path, r.URL.Path)
+				return nil, ErrInvalidURL
+			}
+			return url.Parse(s.URL)
+		},
+	}
+
+	hc := &http.Client{Transport: tr}
+
+	c := New(s.URL, hc)
+
+	return s, c
+}
