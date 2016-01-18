@@ -2,3 +2,41 @@ mongo:
   image: mongo:3
   ports:
     - "27017:27017"
+
+build:
+  # Image for building the lambdac binary
+  build: dockerfiles/build
+  # command: image:tag # Alternative image name/tag
+  # environment:
+  #   CGO_ENABLED: 1 # Enable cgo
+  #   LDFLAGS: -s # Add ldflags
+  #   COMPRESS_BINARY: true # Compress binary with upx
+  volumes:
+    - .:/src
+    # - /var/run/docker.sock:/var/run/docker.sock # For building image
+
+test:
+  # Image for running lambdac unit tests
+  build: dockerfiles/test
+  volumes:
+    - .:/src
+
+# stage:
+#   # Image for running lambdac integration tests
+#   build: dockerfiles/stage
+#   links:
+#     - mongo
+
+# release:
+#   # Image for building binaries for multiple OS and publishing on GitHub:
+#   #   - Modify CHANGELOG.md
+#   #     + Get the first (latest) date from CHANGELOG.md
+#   #     + Generate the summary from issues and pull requests from GitHub
+#   #     + Prepend on CHANGELOG.md
+#   #   - Commit changes
+#   #   - Create a release tag
+#   #   - Push changes
+#   #   - Create a release on GitHub
+#   #   - Zip binaries
+#   #   - Publish binaries as assets on release
+#   build: dockerfiles/release
