@@ -21,8 +21,29 @@ type Store interface {
 	// Init the store (open files, connections, allocate memory, etc.)
 	Init(connStr string) (func(), error)
 
+	// Functions gives access to the underlying FunctionRepo instance
+	Functions() FunctionRepo
+
 	// Runtimes gives access to the underlying RuntimeRepo instance
 	Runtimes() RuntimeRepo
+}
+
+// FunctionRepo is the interface that holds function information
+type FunctionRepo interface {
+	// All get functions matching criteria
+	All() (types.Functions, error)
+
+	// FindByIDOrName finds a function by ID or name (can be partial)
+	FindByIDOrName(id string) (types.Function, error)
+
+	// FindByRuntimeID finds all functions matching with specified runtime ID
+	FindByRuntimeID(id string) (types.Functions, error)
+
+	// Create a new function
+	// Create(function types.Function) (types.Function, error)
+
+	// Remove a function
+	// Remove(id string) error
 }
 
 // RuntimeRepo is the interface that holds runtime information
