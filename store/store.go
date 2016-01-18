@@ -40,10 +40,10 @@ type FunctionRepo interface {
 	FindByRuntimeID(id string) (types.Functions, error)
 
 	// Create a new function
-	// Create(function types.Function) (types.Function, error)
+	Create(function types.Function) (types.Function, error)
 
 	// Remove a function
-	// Remove(id string) error
+	Remove(id string) error
 }
 
 // RuntimeRepo is the interface that holds runtime information

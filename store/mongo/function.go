@@ -70,3 +70,18 @@ func (r *functionRepo) FindByRuntimeID(id string) (functions types.Functions, er
 	// TODO Handle other errors
 	return
 }
+
+func (r *functionRepo) Create(function types.Function) (out types.Function, err error) {
+	err = r.c.Insert(function)
+	out = function
+	return
+}
+
+func (r *functionRepo) Remove(id string) (err error) {
+	err = r.c.Remove(bson.M{"id": id})
+	if err != nil {
+		err = store.ErrNotFound
+	}
+	// TODO Handle other errors
+	return
+}

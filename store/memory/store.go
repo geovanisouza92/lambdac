@@ -64,6 +64,21 @@ func (r *functionRepo) FindByRuntimeID(id string) (types.Functions, error) {
 	return out, nil
 }
 
+func (r *functionRepo) Create(function types.Function) (types.Function, error) {
+	r.data = append(r.data, function)
+	return function, nil
+}
+
+func (r *functionRepo) Remove(id string) error {
+	for i, f := range r.data {
+		if f.ID == id {
+			r.data = append(r.data[i:], r.data[i+1:]...)
+			return nil
+		}
+	}
+	return store.ErrNotFound
+}
+
 func (r *runtimeRepo) All() (types.Runtimes, error) {
 	return r.data, nil
 }
@@ -77,6 +92,11 @@ func (r *runtimeRepo) FindByIDOrName(id string) (types.Runtime, error) {
 	return types.Runtime{}, nil
 }
 
+func (r *runtimeRepo) Create(runtime types.Runtime) (types.Runtime, error) {
+	r.data = append(r.data, runtime)
+	return runtime, nil
+}
+
 func (r *runtimeRepo) Remove(id string) error {
 	for i, rt := range r.data {
 		if rt.ID == id {
@@ -85,9 +105,4 @@ func (r *runtimeRepo) Remove(id string) error {
 		}
 	}
 	return store.ErrNotFound
-}
-
-func (r *runtimeRepo) Create(runtime types.Runtime) (types.Runtime, error) {
-	r.data = append(r.data, runtime)
-	return runtime, nil
 }

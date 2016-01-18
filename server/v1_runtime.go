@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/geovanisouza92/lambdac/driver"
@@ -33,21 +32,26 @@ func (s *Server) runtimeCreate(w http.ResponseWriter, r *http.Request) {
 	s.parseBody(w, r, &rt)
 
 	// Validate runtime
-	attrs := map[string]string{
-		"name":    strings.ToLower(nonLetter.ReplaceAllLiteralString(rt.Name, "")),
-		"image":   rt.Image,
-		"command": rt.Command,
-		"driver":  rt.Driver,
+	if rt.Name == "" {
+		exc := fmt.Errorf("[runtimeCreate] Attribute \"name\" is required")
+		s.failure(w, r, http.StatusBadRequest, exc)
+		return
 	}
-	for a, v := range attrs {
-		if v == "" {
-			exc := fmt.Errorf("[runtimeCreate] Attribute %q is required", a)
-			s.failure(w, r, http.StatusBadRequest, exc)
-			return
-		}
+	if rt.Image == "" {
+		exc := fmt.Errorf("[runtimeCreate] Attribute \"image\" is required")
+		s.failure(w, r, http.StatusBadRequest, exc)
+		return
 	}
-
-	// Check if driver is valid
+	if rt.Command == "" {
+		exc := fmt.Errorf("[runtimeCreate] Attribute \"command\" is required")
+		s.failure(w, r, http.StatusBadRequest, exc)
+		return
+	}
+	if rt.Driver == "" {
+		exc := fmt.Errorf("[runtimeCreate] Attribute \"driver\" is required")
+		s.failure(w, r, http.StatusBadRequest, exc)
+		return
+	}
 	_, err := driver.Open(rt.Driver)
 	if err != nil {
 		exc := fmt.Errorf("[runtimeCreate] Invalid driver: %s", err)
@@ -101,15 +105,15 @@ func (s *Server) runtimeDestroy(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If not --force, say to user destroy related functions first
-	if !force {
+	if len(functions) > 0 && !force {
 		exc := fmt.Errorf("[runtimeDestroy] This runtime is used by other functions. Destroy them first or use --force option")
 		s.failure(w, r, http.StatusBadRequest, exc)
 		return
 	}
 
 	// Destroy related functions
-	for _ = range functions {
-		//
+	for _, f := range functions {
+		s.functionDestroyInternal(w, r, f)
 	}
 
 	// Destroy runtime
