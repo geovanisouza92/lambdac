@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/codegangsta/cli"
+	envLib "github.com/geovanisouza92/env"
 	"github.com/geovanisouza92/lambdac/cli/tab"
 )
 
@@ -59,7 +60,9 @@ func actionEnvSet(c *cli.Context) {
 
 	vars := make([]string, len(c.Args()))
 	for _, a := range c.Args() {
-		// TODO Validate variable pair
+		if _, _, err := envLib.ParseLine(a); err != nil {
+			logger.Fatalf("Invalid environment variable %q. Pattern must be VARIABLE=VALUE", err)
+		}
 		vars = append(vars, a)
 	}
 

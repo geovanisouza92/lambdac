@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/codegangsta/cli"
+	envLib "github.com/geovanisouza92/env"
 	"github.com/geovanisouza92/lambdac/types"
 )
 
@@ -70,6 +71,13 @@ func actionCreate(c *cli.Context) {
 		}
 	}
 
+	envVars := c.StringSlice("env")
+	for _, e := range envVars {
+		if _, _, err := envLib.ParseLine(e); err != nil {
+			logger.Fatalf("Invalid environment variable %q. Pattern must be VARIABLE=VALUE", e)
+		}
+	}
+
 	timeout := checkTimeoutOrFatal(c)
 	function := types.Function{
 		Name:        c.String("name"),
@@ -79,7 +87,7 @@ func actionCreate(c *cli.Context) {
 		Timeout:     timeout.Nanoseconds(),
 		Memory:      c.Int("memory"),
 		Instances:   c.Int("instances"),
-		Env:         c.StringSlice("env"),
+		Env:         envVars,
 	}
 
 	created, err := api.FunctionCreate(function)
