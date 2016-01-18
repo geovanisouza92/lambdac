@@ -44,6 +44,16 @@ func New(storeName, connString string) (*Server, error) {
 	// Create server
 	s := Server{r: mux.NewRouter(), s: st, f: fn}
 
+	// Configure API routes
+	v1 := s.r.PathPrefix("/api/v1").Subrouter() // HTTP /api/v1
+	r := v1.PathPrefix("/runtimes").Subrouter() // HTTP /api/v1/runtimes
+	rid := r.PathPrefix("/{id}").Subrouter()    // HTTP /api/v1/runtimes/{id}
+
+	r.Methods("GET").HandlerFunc(s.runtimeList)                         // HTTP 200 OK
+	r.Methods("POST").HandlerFunc(s.runtimeCreate)                      // HTTP 201 Created
+	rid.Methods("GET").HandlerFunc(s.queryRuntime(s.runtimeInfo))       // HTTP 200 OK
+	rid.Methods("DELETE").HandlerFunc(s.queryRuntime(s.runtimeDestroy)) // HTTP 410 Gone
+
 	return &s, nil
 }
 
