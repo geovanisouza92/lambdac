@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/geovanisouza92/lambdac/store"
 	"net/http"
 	"time"
 
@@ -38,6 +39,15 @@ func (s *Server) functionCreate(w http.ResponseWriter, r *http.Request) {
 		exc := fmt.Errorf("[functionCreate] Attribute \"runtime\" is required")
 		s.failure(w, r, http.StatusBadRequest, exc)
 		return
+	} else {
+		// Check if runtime exists
+		if rt, err := s.s.Runtimes().FindByIDOrName(f.Runtime); err == store.ErrNotFound {
+			exc := fmt.Errorf("[functionCreate] Runtime %q does not exists", f.Runtime)
+			s.failure(w, r, http.StatusBadRequest, exc)
+			return
+		} else {
+			f.Runtime = rt.ID
+		}
 	}
 	if f.Timeout <= 0 {
 		exc := fmt.Errorf("[functionCreate] Attribute \"timeout\" must be greater than 0")
@@ -84,8 +94,62 @@ func (s *Server) functionInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) functionConfig(w http.ResponseWriter, r *http.Request) {
-	//
-	// s.success(w, r, http.StatusAccepted, functions)
+	existing := context.Get(r, "function").(types.Function)
+
+	var changed types.Function
+	s.parseBody(w, r, &changed)
+
+	// Validate changed attributes
+	if changed.Runtime != "" && changed.Runtime != existing.Runtime {
+		// Check if runtime exists
+		if rt, err := s.s.Runtimes().FindByIDOrName(changed.Runtime); err == store.ErrNotFound {
+			exc := fmt.Errorf("[functionConfig] Runtime %q does not exists", changed.Runtime)
+			s.failure(w, r, http.StatusBadRequest, exc)
+			return
+		} else {
+			existing.Runtime = rt.ID
+		}
+	}
+	if changed.Handler != existing.Handler {
+		existing.Handler = changed.Handler
+	}
+	if changed.Description != existing.Description {
+		existing.Description = changed.Description
+	}
+	if changed.Timeout != existing.Timeout {
+		if changed.Timeout < 1 {
+			// Invalid timeout
+			exc := fmt.Errorf("[functionConfig] Invalid timeout, must be greater than 0")
+			s.failure(w, r, http.StatusBadRequest, exc)
+			return
+		}
+		existing.Timeout = changed.Timeout
+	}
+	if changed.Memory != existing.Memory {
+		if changed.Memory < 32 {
+			exc := fmt.Errorf("[functionConfig] invalid memory, must be greater than 32 MB")
+			s.failure(w, r, http.StatusBadRequest, exc)
+			return
+		}
+		existing.Memory = changed.Memory
+	}
+	if changed.Instances != existing.Instances {
+		if changed.Instances < 1 {
+			exc := fmt.Errorf("[functionConfig] invalid instances number, must be greater than 0")
+			s.failure(w, r, http.StatusBadRequest, exc)
+			return
+		}
+		existing.Instances = changed.Instances
+	}
+
+	// Apply changes
+	if err := s.s.Functions().Update(existing); err != nil {
+		exc := fmt.Errorf("[functionConfig] Store error caused by: %s", err)
+		s.failure(w, r, http.StatusInternalServerError, exc)
+		return
+	}
+
+	s.success(w, r, http.StatusAccepted, nil)
 }
 
 func (s *Server) functionDestroy(w http.ResponseWriter, r *http.Request) {
