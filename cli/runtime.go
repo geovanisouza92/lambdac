@@ -230,8 +230,10 @@ func actionRuntimeDestroy(c *cli.Context) {
 	}
 
 	// Prompt user if --force is not set
-	if !c.Bool("force") && !promptYesNo("Are you sure you want to delete the runtime %q (ID: %s)?", r.Label, r.ID) {
-		return
+	if !c.Bool("force") {
+		if !promptYesNo("Are you sure you want to delete the runtime %q (ID: %s)?", r.Label, r.ID) {
+			return
+		}
 	}
 
 	// Delete runtime
