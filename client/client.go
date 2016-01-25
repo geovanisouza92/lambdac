@@ -46,10 +46,13 @@ func (c *client) FunctionConfig(id string, function types.Function) (err error) 
 }
 
 func (c *client) FunctionDestroy(id string, force bool) (err error) {
-	data := struct {
-		force bool `json:"force"`
-	}{force}
-	err = c.send("DELETE", escape("/functions/%s", id), http.StatusGone, data, nil)
+	q := url.Values{}
+	if force {
+		q.Add("force", "t")
+	} else {
+		q.Add("force", "f")
+	}
+	err = c.send("DELETE", escapeEx("/functions/%s", id, q), http.StatusGone, nil, nil)
 	return
 }
 
@@ -121,10 +124,13 @@ func (c *client) RuntimeInfo(id string) (runtime types.Runtime, err error) {
 }
 
 func (c *client) RuntimeDestroy(id string, force bool) (err error) {
-	data := struct {
-		force bool `json:"force"`
-	}{force}
-	err = c.send("DELETE", escape("/runtimes/%s", id), http.StatusGone, data, nil)
+	q := url.Values{}
+	if force {
+		q.Add("force", "t")
+	} else {
+		q.Add("force", "f")
+	}
+	err = c.send("DELETE", escapeEx("/runtimes/%s", id, q), http.StatusGone, nil, nil)
 	return
 }
 
@@ -181,4 +187,8 @@ func (c *client) send(method, path string, expectedStatus int, reqdata, respdata
 
 func escape(tpl, s string) string {
 	return fmt.Sprintf(tpl, url.QueryEscape(s))
+}
+
+func escapeEx(tpl, s string, q url.Values) string {
+	return fmt.Sprintf(tpl+"?%s", url.QueryEscape(s), q.Encode())
 }
