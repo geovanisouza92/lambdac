@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"github.com/geovanisouza92/lambdac/types"
 	"time"
 
 	"github.com/codegangsta/cli"
@@ -25,8 +26,22 @@ func actionList(c *cli.Context) {
 	t, fn := tab.New()
 	defer fn()
 
+	// Cache runtime information
+	rts := map[string]types.Runtime{}
+
+	// TODO Use channels for enhance performance
+
 	t.Output("ID", "NAME", "RUNTIME", "MEMORY", "UPDATED")
 	for _, f := range functions {
-		t.Output(f.ID[:shortIDLen], f.Name, f.Runtime, f.Memory, f.Updated.Format(time.RFC822))
+		rt, ok := rts[f.Runtime]
+		if !ok {
+			r, err := api.RuntimeInfo(f.Runtime)
+			if err != nil {
+				logger.Fatalf("Failed to get runtime information: %s", err)
+			}
+			rt = r
+			rts[f.Runtime] = r
+		}
+		t.Output(f.ID[:shortIDLen], f.Name, rt.Name, f.Memory, f.Updated.Format(time.RFC822))
 	}
 }
