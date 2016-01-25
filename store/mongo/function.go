@@ -12,6 +12,18 @@ type functionRepo struct {
 }
 
 func (r *functionRepo) Index() (err error) {
+	idIdx := mgo.Index{
+		Key:        []string{"id"},
+		Unique:     true,
+		DropDups:   true,
+		Background: true,
+		Sparse:     true,
+		Name:       "idx_function_id",
+	}
+	err = r.c.EnsureIndex(idIdx)
+	if err != nil {
+		return
+	}
 	nameIdx := mgo.Index{
 		Key:        []string{"name"},
 		Unique:     true,

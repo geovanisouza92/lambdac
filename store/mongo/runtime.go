@@ -11,7 +11,19 @@ type runtimeRepo struct {
 	c *mgo.Collection
 }
 
-func (r *runtimeRepo) Index() error {
+func (r *runtimeRepo) Index() (err error) {
+	idIdx := mgo.Index{
+		Key:        []string{"id"},
+		Unique:     true,
+		DropDups:   true,
+		Background: true,
+		Sparse:     true,
+		Name:       "idx_runtime_id",
+	}
+	err = r.c.EnsureIndex(idIdx)
+	if err != nil {
+		return
+	}
 	nameIdx := mgo.Index{
 		Key:        []string{"name"},
 		Unique:     true,
@@ -20,7 +32,8 @@ func (r *runtimeRepo) Index() error {
 		Sparse:     true,
 		Name:       "idx_runtime_name",
 	}
-	return r.c.EnsureIndex(nameIdx)
+	err = r.c.EnsureIndex(nameIdx)
+	return
 }
 
 func (r *runtimeRepo) All() (runtimes types.Runtimes, err error) {
