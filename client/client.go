@@ -31,7 +31,7 @@ func (c *client) FunctionList() (functions types.Functions, err error) {
 }
 
 func (c *client) FunctionCreate(function types.Function) (out types.Function, err error) {
-	err = c.send("POST", "/functions", http.StatusOK, function, &out)
+	err = c.send("POST", "/functions", http.StatusCreated, function, &out)
 	return
 }
 
@@ -41,7 +41,7 @@ func (c *client) FunctionInfo(id string) (function types.Function, err error) {
 }
 
 func (c *client) FunctionConfig(id string, function types.Function) (err error) {
-	err = c.send("PUT", escape("/functions/%s", id), http.StatusOK, function, nil)
+	err = c.send("PUT", escape("/functions/%s", id), http.StatusAccepted, function, nil)
 	return
 }
 
