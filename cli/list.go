@@ -1,11 +1,11 @@
 package cli
 
 import (
-	"github.com/geovanisouza92/lambdac/types"
 	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/geovanisouza92/lambdac/cli/tab"
+	"github.com/geovanisouza92/lambdac/types"
 )
 
 var list = cli.Command{

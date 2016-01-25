@@ -2,11 +2,11 @@ package server
 
 import (
 	"fmt"
-	"github.com/geovanisouza92/lambdac/store"
 	"net/http"
 	"time"
 
 	"github.com/geovanisouza92/env"
+	"github.com/geovanisouza92/lambdac/store"
 	"github.com/geovanisouza92/lambdac/types"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
