@@ -237,4 +237,7 @@ func actionRuntimeDestroy(c *cli.Context) {
 	}
 
 	// Delete runtime
+	if err = api.RuntimeDestroy(r.ID, c.Bool("force")); err != nil {
+		logger.Fatalf("Error while destroying runtime: %s", err)
+	}
 }
