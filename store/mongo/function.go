@@ -59,8 +59,16 @@ func (r *functionRepo) All() (functions types.Functions, err error) {
 func (r *functionRepo) FindByIDOrName(id string) (function types.Function, err error) {
 	q := r.c.Find(bson.M{
 		"$or": []interface{}{
-			bson.M{"id": id},
-			bson.M{"name": id},
+			bson.M{
+				"id": bson.M{
+					"$regex": bson.RegEx{".*" + id + ".*", ""},
+				},
+			},
+			bson.M{
+				"name": bson.M{
+					"$regex": bson.RegEx{".*" + id + ".*", ""},
+				},
+			},
 		},
 	})
 	err = q.One(&function)
