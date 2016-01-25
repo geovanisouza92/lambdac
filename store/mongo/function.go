@@ -77,6 +77,12 @@ func (r *functionRepo) Create(function types.Function) (out types.Function, err 
 	return
 }
 
+func (r *functionRepo) Update(function types.Function) (err error) {
+	q := bson.M{"id": function.ID}
+	err = r.c.Update(q, function)
+	return
+}
+
 func (r *functionRepo) Remove(id string) (err error) {
 	err = r.c.Remove(bson.M{"id": id})
 	if err != nil {

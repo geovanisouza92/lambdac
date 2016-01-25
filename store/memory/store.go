@@ -69,6 +69,16 @@ func (r *functionRepo) Create(function types.Function) (types.Function, error) {
 	return function, nil
 }
 
+func (r *functionRepo) Update(function types.Function) error {
+	for i, f := range r.data {
+		if f.ID == function.ID || f.Name == function.Name {
+			r.data[i] = function
+			return nil
+		}
+	}
+	return nil
+}
+
 func (r *functionRepo) Remove(id string) error {
 	for i, f := range r.data {
 		if f.ID == id {

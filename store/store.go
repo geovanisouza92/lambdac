@@ -42,6 +42,9 @@ type FunctionRepo interface {
 	// Create a new function
 	Create(function types.Function) (types.Function, error)
 
+	// Update a function
+	Update(function types.Function) error
+
 	// Remove a function
 	Remove(id string) error
 }
