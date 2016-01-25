@@ -17,13 +17,13 @@ type Driver interface {
 	// Configure driver
 	Init(options []string) error
 	// Create a function instance
-	CreateInstance(function types.Function, runtime types.Runtime) (string, error)
+	Create(function types.Function, runtime types.Runtime) (string, error)
 	// Start a function instance
-	StartInstance(id string) error
+	Start(id string) error
 	// Stop a function instance
-	StopInstance(id string) error
+	Stop(id string) error
 	// Destroy a function instance
-	DestroyInstance(id string) error
+	Destroy(id string) error
 }
 
 func Register(name string, driver Driver) {

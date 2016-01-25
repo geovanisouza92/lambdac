@@ -32,7 +32,7 @@ func (d *dockerDriver) Init(options []string) (err error) {
 	return
 }
 
-func (d *dockerDriver) CreateInstance(function types.Function, runtime types.Runtime) (id string, err error) {
+func (d *dockerDriver) Create(function types.Function, runtime types.Runtime) (id string, err error) {
 	opts := docker.CreateContainerOptions{
 		// Name: "",
 		Config: &docker.Config{
@@ -62,17 +62,17 @@ func (d *dockerDriver) CreateInstance(function types.Function, runtime types.Run
 	return
 }
 
-func (d *dockerDriver) StartInstance(id string) (err error) {
+func (d *dockerDriver) Start(id string) (err error) {
 	// TODO
 	return
 }
 
-func (d *dockerDriver) StopInstance(id string) (err error) {
+func (d *dockerDriver) Stop(id string) (err error) {
 	// TODO
 	return
 }
 
-func (d *dockerDriver) DestroyInstance(id string) (err error) {
+func (d *dockerDriver) Destroy(id string) (err error) {
 	// TODO
 	return
 }
