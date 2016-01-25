@@ -157,6 +157,8 @@ func (s *Server) functionDestroy(w http.ResponseWriter, r *http.Request) {
 
 	s.functionDestroyInternal(w, r, function)
 
+	// TODO Use force to destroy function instances
+
 	s.success(w, r, http.StatusGone, nil)
 }
 
