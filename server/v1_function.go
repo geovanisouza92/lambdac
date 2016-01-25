@@ -175,8 +175,8 @@ func (s *Server) functionDestroyInternal(w http.ResponseWriter, r *http.Request,
 }
 
 func (s *Server) functionEnv(w http.ResponseWriter, r *http.Request) {
-	//
-	// s.success(w, r, http.StatusOK, functions)
+	function := context.Get(r, "function").(types.Function)
+	s.success(w, r, http.StatusOK, function.Env)
 }
 
 func (s *Server) functionEnvSet(w http.ResponseWriter, r *http.Request) {
