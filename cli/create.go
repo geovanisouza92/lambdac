@@ -21,7 +21,7 @@ var create = cli.Command{
 			Usage: "Function runtime",
 		},
 		cli.StringFlag{
-			Name:  "h, handler",
+			Name:  "a, handler",
 			Usage: "Function handler",
 		},
 		cli.StringFlag{
@@ -84,7 +84,7 @@ func actionCreate(c *cli.Context) {
 		Runtime:     c.String("runtime"),
 		Handler:     c.String("handler"),
 		Description: c.String("description"),
-		Timeout:     timeout.Nanoseconds(),
+		Timeout:     timeout.Nanoseconds() / 1000 / 1000,
 		Memory:      c.Int("memory"),
 		Instances:   c.Int("instances"),
 		Env:         envVars,

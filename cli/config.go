@@ -50,7 +50,7 @@ func actionConfig(c *cli.Context) {
 		Runtime:     c.String("runtime"),
 		Handler:     c.String("handler"),
 		Description: c.String("description"),
-		Timeout:     timeout.Nanoseconds(),
+		Timeout:     timeout.Nanoseconds() / 1000 / 1000,
 		Memory:      c.Int("memory"),
 		Instances:   c.Int("instances"),
 	}
