@@ -16,6 +16,12 @@ var runtime = cli.Command{
 	Aliases: []string{"rt"},
 	Usage:   "Function runtimes information",
 	Action:  actionRuntime,
+	Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:  "q, quiet",
+			Usage: "Print only IDs",
+		},
+	},
 	Subcommands: []cli.Command{
 		cli.Command{
 			Name:   "create",
@@ -98,6 +104,13 @@ func actionRuntime(c *cli.Context) {
 	runtimes, err := api.RuntimeList()
 	if err != nil {
 		logger.Fatalf("Failed to list runtimes: %s", err)
+	}
+
+	if c.Bool("quiet") {
+		for _, r := range runtimes {
+			fmt.Println(r.ID)
+		}
+		return
 	}
 
 	// Print information

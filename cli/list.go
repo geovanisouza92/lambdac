@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/codegangsta/cli"
@@ -13,6 +14,12 @@ var list = cli.Command{
 	Aliases: []string{"ls"},
 	Usage:   "List all functions",
 	Action:  actionList,
+	Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:  "q, quiet",
+			Usage: "Print only IDs",
+		},
+	},
 }
 
 func actionList(c *cli.Context) {
@@ -20,6 +27,13 @@ func actionList(c *cli.Context) {
 	functions, err := api.FunctionList()
 	if err != nil {
 		logger.Fatalf("Failed to list functions: %s", err)
+	}
+
+	if c.Bool("quiet") {
+		for _, f := range functions {
+			fmt.Println(f.ID)
+		}
+		return
 	}
 
 	// Prepare header
