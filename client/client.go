@@ -134,15 +134,15 @@ func (c *client) RuntimeDestroy(id string, force bool) (err error) {
 	return
 }
 
-func (c *client) send(method, path string, expectedStatus int, reqdata, respdata interface{}) error {
+func (c *client) send(method, path string, statusCode int, in, out interface{}) error {
 	var br io.ReadWriter
 
 	// Serialize request body
-	if reqdata != nil {
+	if in != nil {
 		br = &bytes.Buffer{}
 		e := json.NewEncoder(br)
 
-		if err := e.Encode(reqdata); err != nil {
+		if err := e.Encode(in); err != nil {
 			return err
 		}
 	}
@@ -163,7 +163,7 @@ func (c *client) send(method, path string, expectedStatus int, reqdata, respdata
 	}
 
 	// Process unexpected error
-	if res.StatusCode != expectedStatus {
+	if res.StatusCode != statusCode {
 		b, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			return err
@@ -172,13 +172,13 @@ func (c *client) send(method, path string, expectedStatus int, reqdata, respdata
 	}
 
 	// Ignored response data
-	if respdata == nil {
+	if out == nil {
 		return nil
 	}
 
 	// Parse response
 	d := json.NewDecoder(res.Body)
-	if err = d.Decode(respdata); err != nil {
+	if err = d.Decode(out); err != nil {
 		return err
 	}
 
